@@ -1,0 +1,155 @@
+const Discord = require("discord.js");
+const config = require("../config.json");
+
+const client = new Discord.Client();
+//const emoji = new Discord.ReactionCollector(); error
+const prefix = "!";
+const commandList = [
+    "command_full",
+    "command",
+    "ping",
+    "sum",
+    "avatar",
+    "roll",
+];
+
+client.on('ready', () => {
+    console.log('Я готов!');
+});
+
+client.on("message", function(message) {
+    if (message.author.bot) return;
+    if (!message.content.startsWith(prefix)) return;
+
+    const commandBody = message.content.slice(prefix.length);
+    const args = commandBody.split(' ');
+    const command = args.shift().toLowerCase();
+
+    if (command === 'command_full') {
+        let list = ``
+        for (let i = 0; i < commandList.length; i++) {
+            list += `${commandList[i]}, `;
+        }
+        message.reply(list);
+    }
+    else if (command === "command") {
+        let answer = `Потом тут будут команды и объяснения`
+        message.reply(answer);
+    }
+    else if (command === "ping") {
+        const timeToken = Date.now() - message.createdTimestamp;
+        message.reply(`Pong! Это сообщение имеет задержку ${timeToken}ms.`);
+    }
+    else if (command === "sum") {
+        const numArgs = args.map(x => parseFloat(x));
+        const sum = numArgs.reduce((counter, x) => counter += x);
+        message.reply(`Сумма: ${sum}`);
+    }
+    else if (command === "avatar") {
+            message.reply(message.author.displayAvatarURL());
+        }
+    else if (command === "roll") {
+        let dice = args[0];
+        let oneArgument = args[1].split('')
+        let diceFacet = dice.match(/(?<=d)\d+/);
+        let diceNumber = dice.match(/\d+(?=d)/);
+        let sumNumber = dice.match(/(?<=\+)\d+/);
+        if (args[1] == Number) {
+            let leaveDice = oneArgument.match(/(?<=d)\d+/);
+        }
+        function standartDice (diceNumber, diceFacet, diceIndex) {
+            let result = [];
+            let idx = result.indexOf(diceIndex);
+                for (let i = 0; i < diceNumber; i++) {
+                    result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
+                    if (diceIndex == true) {
+                        idx = result.indexOf(diceIndex, idx + 1);
+                    }
+
+            }
+            return result;
+
+        }
+        function finalDice (sumNumber, resultDice) {
+            let sum = resultDice.reduce((partial_sum, a) => partial_sum + a, 0)
+            let result = ``;
+            if (sumNumber !== null) {
+                result += `\nМодификатор: ${sumNumber};`;
+                sum = Number(sum) + Number(sumNumber);
+                result += `\nИтого: ${sum}.`;
+                return result;
+            }  else {
+                    result += `\nИтого: ${sum};`;
+                    return result;
+                }
+            }
+        function fateDice (arrDice, sumNumber) {
+            let result = ``
+            let faceAddition = 0
+            for (let i = 0; i < arrDice.length; i++) {
+                switch (arrDice[i]) {
+                    case 1:
+                        arrDice[i] = "-"
+                        break;
+                    case 2:
+                        arrDice[i] = "="
+                        break;
+                    case 3:
+                        arrDice[i] = "+"
+                        break;
+                    default:
+                        console.log("Неверный тип данных");
+                }
+            }
+            result = `[${arrDice.map(String)}]`;
+            for (let i = 0; i < arrDice.length; i++) {
+                switch (arrDice[i]) {
+                    case "-":
+                        faceAddition += -1
+                        break;
+                    case "=":
+                        break;
+                    case "+":
+                        faceAddition += 1
+                        break;
+                    default:
+                        console.log("Неверный тип данных");
+                }
+            }
+            if (sumNumber !== null) {
+                result += `\nМодификатор: ${sumNumber};`;
+                faceAddition += Number(sumNumber);
+                result += `\nИтого: ${faceAddition}.`;
+                return result;
+            } else {
+                result += `\nИтого: ${faceAddition};`;
+                return result;
+            }
+        }
+
+        if (oneArgument !== undefined ) {
+                console.log("Алерт")
+        }
+        else if (diceFacet !== null) {
+            let arrDice = standartDice(diceNumber, diceFacet);
+            let sumDice = finalDice(sumNumber, arrDice);
+            message.reply(`[${arrDice}] ${sumDice}`);
+        }
+        else if (diceFacet === null) {
+            let arrDice = standartDice(diceNumber, 3);
+            let result = fateDice(arrDice, sumNumber);
+            message.reply(result);
+        }
+        else if (oneArgument[1] === "e") {
+            let arrDice = standartDice(diceNumber, diceFacet);
+
+        }
+    }
+
+});
+
+/*client.on("collect", function(){
+    if (collect.message !== 873535111369482240) return;
+    emoji.message
+});*/
+client.login(config.BOT_TOKEN);
