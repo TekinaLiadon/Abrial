@@ -1,5 +1,5 @@
-const Discord = require("discord.js");
-const config = require("../config.json");
+const Discord = require("../node_modules/discord.js");
+const config = require("../token.json");
 
 const client = new Discord.Client();
 //const emoji = new Discord.ReactionCollector(); error
