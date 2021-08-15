@@ -1,8 +1,8 @@
 const Discord = require("../node_modules/discord.js");
 const config = require("../token.json");
+const fs = require('fs');
 
 const client = new Discord.Client();
-//const emoji = new Discord.ReactionCollector(); error
 const prefix = "!";
 const commandList = [
     "command_full",
@@ -56,23 +56,35 @@ client.on("message", function(message) {
         let sumNumber = dice.match(/(?<=\+)\d+/);
         if (args[1] == Number) {
             let leaveDice = oneArgument.match(/(?<=d)\d+/);
-        }
-        function standartDice (diceNumber, diceFacet, diceIndex) {
+        } // Вспомнить зачем
+        function standartDice (diceNumber, diceFacet, oneArgument) {
             let result = [];
-            let idx = result.indexOf(diceIndex);
                 for (let i = 0; i < diceNumber; i++) {
                     result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
-                    if (diceIndex == true) {
-                        idx = result.indexOf(diceIndex, idx + 1);
-                    }
-
+            }
+            if (oneArgument[0] === "e") {
+                let boomFacet = oneArgument[1]
+                if (oneArgument[2] == String) {
+                    boomFacet += oneArgument[2];
+                }
+                for (let i = 0; i < result.length; i++) {
+                    if (result[i] >= boomFacet){
+                        result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
+                    } else if (result.length > 100 ) {
+                        break;
+                     }
+                }
             }
             return result;
 
         }
-        function finalDice (sumNumber, resultDice) {
-            let sum = resultDice.reduce((partial_sum, a) => partial_sum + a, 0)
+        function finalDice (sumNumber, resultDice, diceNumber) {
+            let sum = resultDice.reduce((partial_sum, a) => partial_sum + a, 0);
             let result = ``;
+            if (resultDice.length > diceNumber) {
+                let boomDice = resultDice.splice(diceNumber);
+                result += `\nВзрыв костей: ${boomDice};`;
+            }
             if (sumNumber !== null) {
                 result += `\nМодификатор: ${sumNumber};`;
                 sum = Number(sum) + Number(sumNumber);
@@ -82,7 +94,7 @@ client.on("message", function(message) {
                     result += `\nИтого: ${sum};`;
                     return result;
                 }
-            }
+        }
         function fateDice (arrDice, sumNumber) {
             let result = ``
             let faceAddition = 0
@@ -127,8 +139,11 @@ client.on("message", function(message) {
             }
         }
 
-        if (oneArgument !== undefined ) {
-                console.log("Алерт")
+        if (oneArgument[0] === "e") {
+            let arrDice = standartDice(diceNumber, diceFacet, oneArgument);
+            let sumDice = finalDice(sumNumber, arrDice, diceNumber);
+            message.reply(`[${arrDice}] ${sumDice}`);
+            //переделать на ie6
         }
         else if (diceFacet !== null) {
             let arrDice = standartDice(diceNumber, diceFacet);
@@ -139,10 +154,6 @@ client.on("message", function(message) {
             let arrDice = standartDice(diceNumber, 3);
             let result = fateDice(arrDice, sumNumber);
             message.reply(result);
-        }
-        else if (oneArgument[1] === "e") {
-            let arrDice = standartDice(diceNumber, diceFacet);
-
         }
     }
 
