@@ -66,9 +66,18 @@ client.on("message", function(message) {
                 for (let i = 0; i < diceNumber; i++) {
                     if (result[i] >= transferBoundary){
                         result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
+                    }
+                }
+            }
+            else if (oneArgument[0] ==="i"){
+                const boomFacet = oneArgument.splice(2);
+                const transferBoundary = boomFacet.map(i=>x+=i, x=0).reverse()[0]
+                for (let i = 0; i < result.length; i++) {
+                    if (result[i] >= transferBoundary){
+                        result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
                     } else if (result.length > 100 ) {
                         break;
-                     }
+                    }
                 }
             }
             return result;
@@ -139,6 +148,12 @@ client.on("message", function(message) {
             const arrDice = standartDice(diceNumber, diceFacet, oneArgument);
             const sumDice = finalDice(sumNumber, arrDice, diceNumber);
             message.reply(`[${arrDice}] ${sumDice}`);
+        }
+        else if(oneArgument[0] ==="i"){
+            const arrDice = standartDice(diceNumber, diceFacet, oneArgument);
+            const sumDice = finalDice(sumNumber, arrDice, diceNumber);
+            message.reply(`[${arrDice}] ${sumDice}`);
+            //Придумать как оформить и оптимизировать
         }
         else if (diceFacet !== null) {
             const arrDice = standartDice(diceNumber, diceFacet);
