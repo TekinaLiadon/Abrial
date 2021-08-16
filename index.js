@@ -49,26 +49,22 @@ client.on("message", function(message) {
             message.reply(message.author.displayAvatarURL());
         }
     else if (command === "roll") {
-        let dice = args[0];
-        let oneArgument = args[1].split('')
-        let diceFacet = dice.match(/(?<=d)\d+/);
-        let diceNumber = dice.match(/\d+(?=d)/);
-        let sumNumber = dice.match(/(?<=\+)\d+/);
-        if (args[1] == Number) {
-            let leaveDice = oneArgument.match(/(?<=d)\d+/);
-        } // Вспомнить зачем
+        const dice = args[0];
+        const oneArgument = args[1].split('')
+        const diceFacet = dice.match(/(?<=d)\d+/);
+        const diceNumber = dice.match(/\d+(?=d)/);
+        const sumNumber = dice.match(/(?<=\+)\d+/);
+
         function standartDice (diceNumber, diceFacet, oneArgument) {
             let result = [];
                 for (let i = 0; i < diceNumber; i++) {
                     result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
             }
             if (oneArgument[0] === "e") {
-                let boomFacet = oneArgument[1]
-                if (oneArgument[2] == String) {
-                    boomFacet += oneArgument[2];
-                }
-                for (let i = 0; i < result.length; i++) {
-                    if (result[i] >= boomFacet){
+                const boomFacet = oneArgument.splice(1);
+                const transferBoundary = boomFacet.map(i=>x+=i, x=0).reverse()[0]
+                for (let i = 0; i < diceNumber; i++) {
+                    if (result[i] >= transferBoundary){
                         result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
                     } else if (result.length > 100 ) {
                         break;
@@ -82,8 +78,8 @@ client.on("message", function(message) {
             let sum = resultDice.reduce((partial_sum, a) => partial_sum + a, 0);
             let result = ``;
             if (resultDice.length > diceNumber) {
-                let boomDice = resultDice.splice(diceNumber);
-                result += `\nВзрыв костей: ${boomDice};`;
+                const boomDice = resultDice.splice(diceNumber);
+                result += `\nВзрыв костей: [${boomDice}];`;
             }
             if (sumNumber !== null) {
                 result += `\nМодификатор: ${sumNumber};`;
@@ -140,19 +136,18 @@ client.on("message", function(message) {
         }
 
         if (oneArgument[0] === "e") {
-            let arrDice = standartDice(diceNumber, diceFacet, oneArgument);
-            let sumDice = finalDice(sumNumber, arrDice, diceNumber);
+            const arrDice = standartDice(diceNumber, diceFacet, oneArgument);
+            const sumDice = finalDice(sumNumber, arrDice, diceNumber);
             message.reply(`[${arrDice}] ${sumDice}`);
-            //переделать на ie6
         }
         else if (diceFacet !== null) {
-            let arrDice = standartDice(diceNumber, diceFacet);
-            let sumDice = finalDice(sumNumber, arrDice);
+            const arrDice = standartDice(diceNumber, diceFacet);
+            const sumDice = finalDice(sumNumber, arrDice);
             message.reply(`[${arrDice}] ${sumDice}`);
         }
         else if (diceFacet === null) {
-            let arrDice = standartDice(diceNumber, 3);
-            let result = fateDice(arrDice, sumNumber);
+            const arrDice = standartDice(diceNumber, 3);
+            const result = fateDice(arrDice, sumNumber);
             message.reply(result);
         }
     }
