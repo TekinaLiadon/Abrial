@@ -83,14 +83,31 @@ client.on("message", function(message) {
             return result;
 
         }
-        function finalDice (sumNumber, resultDice, diceNumber) {
+        function finalDice (sumNumber, resultDice, diceNumber, oneArgument) {
             let sum = resultDice.reduce((partial_sum, a) => partial_sum + a, 0);
             let result = ``;
             if (resultDice.length > diceNumber) {
                 const boomDice = resultDice.splice(diceNumber);
                 result += `\nВзрыв костей: [${boomDice}];`;
             }
-            if (sumNumber !== null) {
+            if (oneArgument[0] ==="t"){
+                const thresholdDice = oneArgument.splice(1).map(i=>x+=i, x=0).reverse()[0];
+                console.log(thresholdDice)
+                result += `\nЧисло успехов: `;
+                let successfulDice = [];
+                for (let i = 0; i < resultDice.length; i++) {
+                    if(resultDice[i] >= thresholdDice) {
+                        successfulDice.push(1);
+                        console.log(successfulDice)
+                    }
+                    if (i === resultDice.length ) {
+                        successfulDice.map(i=>x+=i, x=0).reverse()[0];
+                        result += successfulDice;
+                    }
+                }
+                return result;
+            }
+            else if (sumNumber !== null) {
                 result += `\nМодификатор: ${sumNumber};`;
                 sum = Number(sum) + Number(sumNumber);
                 result += `\nИтого: ${sum}.`;
@@ -154,6 +171,12 @@ client.on("message", function(message) {
             const sumDice = finalDice(sumNumber, arrDice, diceNumber);
             message.reply(`[${arrDice}] ${sumDice}`);
             //Придумать как оформить и оптимизировать
+        }
+        else if (oneArgument[0] ==="t"){
+            const arrDice = standartDice(diceNumber, diceFacet, oneArgument);
+            const sumDice = finalDice(sumNumber, arrDice, diceNumber, oneArgument);
+            message.reply(`[${arrDice}] ${sumDice}`);
+            //Починить
         }
         else if (diceFacet !== null) {
             const arrDice = standartDice(diceNumber, diceFacet);
