@@ -4,13 +4,11 @@
   "description": "discord bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start" : "node index.js"
   },
   "author": "Tekina / nm0321@yandex.ru",
   "license": "ISC",
   "dependencies": {
-    "discord-reply": "^0.1.2",
-    "discord.js": "^12.5.3",
-    "nano": "^9.0.3"
+    "discord.js": "^12.5.3"
   }
 }
