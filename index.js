@@ -58,58 +58,45 @@ client.on("message", function (message) {
             const diceNumber = dice.match(/\d+(?=d)/);
             const sumNumber = dice.match(/(?<=\+)\d+/);
 
-        function standartDice(diceNumber, diceFacet, oneArgument) {
+        function standartDice(diceNumber, diceFacet) {
             let result = [];
             for (let i = 0; i < diceNumber; i++) {
                 result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
             }
-            if (oneArgument[0] === "e") {
-                const boomFacet = oneArgument.splice(1);
-                const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
-                for (let i = 0; i < diceNumber; i++) {
-                    if (result[i] >= transferBoundary) {
-                        result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
-                    }
-                }
-            } else if (oneArgument[0] === "i") {
-                const boomFacet = oneArgument.splice(2);
-                const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
-                for (let i = 0; i < result.length; i++) {
-                    if (result[i] >= transferBoundary) {
-                        result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
-                    } else if (result.length > 100) {
-                        break;
-                    }
+            return result;
+        }
+
+        function boomDice(oneArgument, arrDice) {
+            let result = arrDice;
+            const boomFacet = oneArgument.splice(1);
+            const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
+            for (let i = 0; i < diceNumber; i++) {
+                if (result[i] >= transferBoundary) {
+                    result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
                 }
             }
             return result;
-
         }
 
-        function finalDice(sumNumber, resultDice, diceNumber, oneArgument) {
+        function infiniteBoomDice(oneArgument, arrDice) {
+            let result = arrDice;
+            const boomFacet = oneArgument.splice(2);
+            const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
+            for (let i = 0; i < result.length; i++) {
+                if (result[i] >= transferBoundary) {
+                    result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
+                } else if (result.length > 100) {
+                    break;
+                }
+            }
+            return result;
+        }
+
+
+        function finalDice(sumNumber, resultDice) {
             let sum = resultDice.reduce((partial_sum, a) => partial_sum + a, 0);
             let result = ``;
-            if (resultDice.length > diceNumber) {
-                const boomDice = resultDice.splice(diceNumber);
-                result += `\nВзрыв костей: [${boomDice}];`;
-            }
-            if (oneArgument[0] === "t") {
-                const thresholdDice = oneArgument.splice(1).map(i => x += i, x = 0).reverse()[0];
-                console.log(thresholdDice)
-                result += `\nЧисло успехов: `;
-                let successfulDice = [];
-                for (let i = 0; i < resultDice.length; i++) {
-                    if (resultDice[i] >= thresholdDice) {
-                        successfulDice.push(1);
-                        console.log(successfulDice)
-                    }
-                    if (i === resultDice.length) {
-                        successfulDice.map(i => x += i, x = 0).reverse()[0];
-                        result += successfulDice;
-                    }
-                }
-                return result;
-            } else if (sumNumber !== null) {
+            if (sumNumber !== null) {
                 result += `\nМодификатор: ${sumNumber};`;
                 sum = Number(sum) + Number(sumNumber);
                 result += `\nИтого: ${sum}.`;
@@ -120,85 +107,116 @@ client.on("message", function (message) {
             }
         }
 
-        function fateDice(arrDice, sumNumber) {
-            let result = ``
-            let faceAddition = 0
-            for (let i = 0; i < arrDice.length; i++) {
-                switch (arrDice[i]) {
-                    case 1:
-                        arrDice[i] = "-"
-                        break;
-                    case 2:
-                        arrDice[i] = "="
-                        break;
-                    case 3:
-                        arrDice[i] = "+"
-                        break;
-                    default:
-                        console.log("Неверный тип данных");
+        function boomFinalDice(resultDice, totalDice) {
+            let result = ''
+            const boomDice = resultDice.splice(diceNumber);
+            result += `\nВзрыв костей: [${boomDice}];`;
+            result += totalDice;
+            return result;
+        };
+        function successFinalDice(oneArgument, resultDice) {
+            let result = ''
+            const thresholdDice = oneArgument.splice(1).map(i => x += i, x = 0).reverse()[0];
+            console.log(thresholdDice)
+            result += `\nЧисло успехов: `;
+            let successfulDice = [];
+            for (let i = 0; i < resultDice.length; i++) {
+                if (resultDice[i] >= thresholdDice) {
+                    successfulDice.push(1);
+                    console.log(successfulDice)
+                }
+                if (i === resultDice.length) {
+                    successfulDice.map(i => x += i, x = 0).reverse()[0];
+                    result += successfulDice;
                 }
             }
-            result = `[${arrDice.map(String)}]`;
-            for (let i = 0; i < arrDice.length; i++) {
-                switch (arrDice[i]) {
-                    case "-":
-                        faceAddition += -1
-                        break;
-                    case "=":
-                        break;
-                    case "+":
-                        faceAddition += 1
-                        break;
-                    default:
-                        console.log("Неверный тип данных");
-                }
-            }
-            if (sumNumber !== null) {
-                result += `\nМодификатор: ${sumNumber};`;
-                faceAddition += Number(sumNumber);
-                result += `\nИтого: ${faceAddition}.`;
-                return result;
-            } else {
-                result += `\nИтого: ${faceAddition};`;
-                return result;
-            }
+            return result;
         }
 
-            if (oneArgument[0] !== null || undefined) {
-                switch (oneArgument[0]) {
-                    case "e":
-                        const arrDice = standartDice(diceNumber, diceFacet, oneArgument);
-                        const sumDice = finalDice(sumNumber, arrDice, diceNumber);
-                        message.reply(`[${arrDice}] ${sumDice}`);
-                        break;
-                    case "i":
-                        const arrDice = standartDice(diceNumber, diceFacet, oneArgument);
-                        const sumDice = finalDice(sumNumber, arrDice, diceNumber);
-                        message.reply(`[${arrDice}] ${sumDice}`);
-                        //Придумать как оформить и оптимизировать
-                        break;
-                    case "t":
-                        const arrDice = standartDice(diceNumber, diceFacet, oneArgument);
-                        const sumDice = finalDice(sumNumber, arrDice, diceNumber, oneArgument);
-                        message.reply(`[${arrDice}] ${sumDice}`);
-                        //Починить
-                        break;
-                }
-            } else {
-                if (diceFacet !== null) {
-                    const arrDice = standartDice(diceNumber, diceFacet);
-                    const sumDice = finalDice(sumNumber, arrDice);
-                    message.reply(`[${arrDice}] ${sumDice}`);
-                } else if (diceFacet === null) {
-                    const arrDice = standartDice(diceNumber, 3);
-                    const result = fateDice(arrDice, sumNumber);
-                    message.reply(result);
-                }
+    function fateDice(arrDice, sumNumber) {
+        let result = ``
+        let faceAddition = 0
+        for (let i = 0; i < arrDice.length; i++) {
+            switch (arrDice[i]) {
+                case 1:
+                    arrDice[i] = "-"
+                    break;
+                case 2:
+                    arrDice[i] = "="
+                    break;
+                case 3:
+                    arrDice[i] = "+"
+                    break;
+                default:
+                    console.log("Неверный тип данных");
             }
-            break;
-        default:
-            console.log("Некорректная команда");
+        }
+        result = `[${arrDice.map(String)}]`;
+        for (let i = 0; i < arrDice.length; i++) {
+            switch (arrDice[i]) {
+                case "-":
+                    faceAddition += -1
+                    break;
+                case "=":
+                    break;
+                case "+":
+                    faceAddition += 1
+                    break;
+                default:
+                    console.log("Неверный тип данных");
+            }
+        }
+        if (sumNumber !== null) {
+            result += `\nМодификатор: ${sumNumber};`;
+            faceAddition += Number(sumNumber);
+            result += `\nИтого: ${faceAddition}.`;
+            return result;
+        } else {
+            result += `\nИтого: ${faceAddition};`;
+            return result;
+        }
     }
 
-});
+    if (oneArgument[0] !== null || undefined) {
+        let arrDice = standartDice(diceNumber, diceFacet)
+        switch (oneArgument[0]) {
+            case "e":
+                message.reply(
+                    `[${boomDice(oneArgument, arrDice)}] 
+                    ${boomFinalDice(arrDice, finalDice(sumNumber, arrDice))}`
+                );
+                break;
+            case "i":
+                message.reply(
+                    `[${infiniteBoomDice(oneArgument, arrDice)}] 
+                    ${boomFinalDice(arrDice, finalDice(sumNumber, arrDice))}`
+	);
+                //Придумать как оформить и оптимизировать
+                break;
+            case "t":
+                message.reply(
+                    `[${infiniteBoomDice(oneArgument, arrDice)}] 
+                    ${successFinalDice(oneArgument, arrDice)}`
+                );
+                //Починить
+                break;
+        }
+    } else {
+        if (diceFacet !== null) {
+            const arrDice = standartDice(diceNumber, diceFacet);
+            const sumDice = finalDice(sumNumber, arrDice);
+            message.reply(`[${arrDice}] ${sumDice}`);
+        } else if (diceFacet === null) {
+            const arrDice = standartDice(diceNumber, 3);
+            const result = fateDice(arrDice, sumNumber);
+            message.reply(result);
+        }
+    }
+    break;
+default:
+    console.log("Некорректная команда");
+}
+
+})
+;
 client.login(config.BOT_TOKEN);
