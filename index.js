@@ -58,7 +58,7 @@ client.on("message", function (message) {
             const diceNumber = dice.match(/\d+(?=d)/);
             const sumNumber = dice.match(/(?<=\+)\d+/);
 
-        function standartDice(diceNumber, diceFacet) {
+        function standartRoll(diceNumber, diceFacet) {
             let result = [];
             for (let i = 0; i < diceNumber; i++) {
                 result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
@@ -66,7 +66,7 @@ client.on("message", function (message) {
             return result;
         }
 
-        function boomDice(oneArgument, arrDice) {
+        function boomRoll(oneArgument, arrDice) {
             let result = arrDice;
             const boomFacet = oneArgument.splice(1);
             const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
@@ -78,7 +78,7 @@ client.on("message", function (message) {
             return result;
         }
 
-        function infiniteBoomDice(oneArgument, arrDice) {
+        function infiniteBoomRoll(oneArgument, arrDice) {
             let result = arrDice;
             const boomFacet = oneArgument.splice(2);
             const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
@@ -93,7 +93,7 @@ client.on("message", function (message) {
         }
 
 
-        function finalDice(sumNumber, resultDice) {
+        function finalRoll(sumNumber, resultDice) {
             let sum = resultDice.reduce((partial_sum, a) => partial_sum + a, 0);
             let result = ``;
             if (sumNumber !== null) {
@@ -107,14 +107,14 @@ client.on("message", function (message) {
             }
         }
 
-        function boomFinalDice(resultDice, totalDice) {
+        function boomFinalRoll(resultDice, totalDice) {
             let result = ''
             const boomDice = resultDice.splice(diceNumber);
             result += `\nВзрыв костей: [${boomDice}];`;
             result += totalDice;
             return result;
         };
-        function successFinalDice(oneArgument, resultDice) {
+        function successFinalRoll(oneArgument, resultDice) {
             let result = ''
             const thresholdDice = oneArgument.splice(1).map(i => x += i, x = 0).reverse()[0];
             console.log(thresholdDice)
@@ -133,7 +133,7 @@ client.on("message", function (message) {
             return result;
         }
 
-    function fateDice(arrDice, sumNumber) {
+    function fateRoll(arrDice, sumNumber) {
         let result = ``
         let faceAddition = 0
         for (let i = 0; i < arrDice.length; i++) {
@@ -178,37 +178,37 @@ client.on("message", function (message) {
     }
 
     if (oneArgument[0] !== null || undefined) {
-        let arrDice = standartDice(diceNumber, diceFacet)
+        let arrDice = standartRoll(diceNumber, diceFacet)
         switch (oneArgument[0]) {
             case "e":
                 message.reply(
-                    `[${boomDice(oneArgument, arrDice)}] 
-                    ${boomFinalDice(arrDice, finalDice(sumNumber, arrDice))}`
+                    `[${boomRoll(oneArgument, arrDice)}] 
+                    ${boomFinalRoll(arrDice, finalDice(sumNumber, arrDice))}`
                 );
                 break;
             case "i":
                 message.reply(
-                    `[${infiniteBoomDice(oneArgument, arrDice)}] 
-                    ${boomFinalDice(arrDice, finalDice(sumNumber, arrDice))}`
+                    `[${infiniteBoomRoll(oneArgument, arrDice)}] 
+                    ${boomFinalRoll(arrDice, finalDice(sumNumber, arrDice))}`
 	);
                 //Придумать как оформить и оптимизировать
                 break;
             case "t":
                 message.reply(
-                    `[${infiniteBoomDice(oneArgument, arrDice)}] 
-                    ${successFinalDice(oneArgument, arrDice)}`
+                    `[${infiniteBoomRoll(oneArgument, arrDice)}] 
+                    ${successFinalRoll(oneArgument, arrDice)}`
                 );
                 //Починить
                 break;
         }
     } else {
         if (diceFacet !== null) {
-            const arrDice = standartDice(diceNumber, diceFacet);
-            const sumDice = finalDice(sumNumber, arrDice);
+            const arrDice = standartRoll(diceNumber, diceFacet);
+            const sumDice = finalRoll(sumNumber, arrDice);
             message.reply(`[${arrDice}] ${sumDice}`);
         } else if (diceFacet === null) {
-            const arrDice = standartDice(diceNumber, 3);
-            const result = fateDice(arrDice, sumNumber);
+            const arrDice = standartRoll(diceNumber, 3);
+            const result = fateRoll(arrDice, sumNumber);
             message.reply(result);
         }
     }
