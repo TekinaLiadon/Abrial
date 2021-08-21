@@ -58,10 +58,14 @@ client.on("message", function (message) {
             const diceNumber = dice.match(/\d+(?=d)/);
             const sumNumber = dice.match(/(?<=\+)\d+/);
 
+
+            let oneRoll (diceFacet) => {
+            Math.round(Math.random() * (diceFacet - 1) + 1);
+        }
         function standartRoll(diceNumber, diceFacet) {
             let result = [];
             for (let i = 0; i < diceNumber; i++) {
-                result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
+                result.push(oneRoll(diceFacet));
             }
             return result;
         }
@@ -72,7 +76,7 @@ client.on("message", function (message) {
             const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
             for (let i = 0; i < diceNumber; i++) {
                 if (result[i] >= transferBoundary) {
-                    result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
+                    result.push(oneRoll(diceFacet));
                 }
             }
             return result;
@@ -84,7 +88,7 @@ client.on("message", function (message) {
             const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
             for (let i = 0; i < result.length; i++) {
                 if (result[i] >= transferBoundary) {
-                    result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
+                    result.push(oneRoll(diceFacet));
                 } else if (result.length > 100) {
                     break;
                 }
