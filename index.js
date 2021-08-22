@@ -59,9 +59,11 @@ client.on("message", function (message) {
             const sumNumber = dice.match(/(?<=\+)\d+/);
 
 
-            let oneRoll (diceFacet) => {
-            Math.round(Math.random() * (diceFacet - 1) + 1);
-        }
+            let oneRoll
+            (diceFacet) => {
+                Math.round(Math.random() * (diceFacet - 1) + 1);
+            }
+
         function standartRoll(diceNumber, diceFacet) {
             let result = [];
             for (let i = 0; i < diceNumber; i++) {
@@ -114,10 +116,11 @@ client.on("message", function (message) {
         function boomFinalRoll(resultDice, totalDice) {
             let result = ''
             const boomDice = resultDice.splice(diceNumber);
-            result += `\nВзрыв костей: [${boomDice}];`;
+            result += `\nВзрыв костей: [${boomDice.join(", ")}];`;
             result += totalDice;
             return result;
         };
+
         function successFinalRoll(oneArgument, resultDice) {
             let result = ''
             const thresholdDice = oneArgument.splice(1).map(i => x += i, x = 0).reverse()[0];
@@ -137,89 +140,89 @@ client.on("message", function (message) {
             return result;
         }
 
-    function fateRoll(arrDice, sumNumber) {
-        let result = ``
-        let faceAddition = 0
-        for (let i = 0; i < arrDice.length; i++) {
-            switch (arrDice[i]) {
-                case 1:
-                    arrDice[i] = "-"
-                    break;
-                case 2:
-                    arrDice[i] = "="
-                    break;
-                case 3:
-                    arrDice[i] = "+"
-                    break;
-                default:
-                    console.log("Неверный тип данных");
+        function fateRoll(arrDice, sumNumber) {
+            let result = ``
+            let faceAddition = 0
+            for (let i = 0; i < arrDice.length; i++) {
+                switch (arrDice[i]) {
+                    case 1:
+                        arrDice[i] = "-"
+                        break;
+                    case 2:
+                        arrDice[i] = "="
+                        break;
+                    case 3:
+                        arrDice[i] = "+"
+                        break;
+                    default:
+                        console.log("Неверный тип данных");
+                }
+            }
+            result = `[${arrDice.map(String)}]`;
+            for (let i = 0; i < arrDice.length; i++) {
+                switch (arrDice[i]) {
+                    case "-":
+                        faceAddition += -1
+                        break;
+                    case "=":
+                        break;
+                    case "+":
+                        faceAddition += 1
+                        break;
+                    default:
+                        console.log("Неверный тип данных");
+                }
+            }
+            if (sumNumber !== null) {
+                result += `\nМодификатор: ${sumNumber};`;
+                faceAddition += Number(sumNumber);
+                result += `\nИтого: ${faceAddition}.`;
+                return result;
+            } else {
+                result += `\nИтого: ${faceAddition};`;
+                return result;
             }
         }
-        result = `[${arrDice.map(String)}]`;
-        for (let i = 0; i < arrDice.length; i++) {
-            switch (arrDice[i]) {
-                case "-":
-                    faceAddition += -1
-                    break;
-                case "=":
-                    break;
-                case "+":
-                    faceAddition += 1
-                    break;
-                default:
-                    console.log("Неверный тип данных");
-            }
-        }
-        if (sumNumber !== null) {
-            result += `\nМодификатор: ${sumNumber};`;
-            faceAddition += Number(sumNumber);
-            result += `\nИтого: ${faceAddition}.`;
-            return result;
-        } else {
-            result += `\nИтого: ${faceAddition};`;
-            return result;
-        }
-    }
 
-    if (oneArgument[0] !== null || undefined) {
-        let arrDice = standartRoll(diceNumber, diceFacet)
-        switch (oneArgument[0]) {
-            case "e":
-                message.reply(
-                    `[${boomRoll(oneArgument, arrDice)}] 
+            if (oneArgument[0] !== null || undefined) {
+                let arrDice = standartRoll(diceNumber, diceFacet)
+                switch (oneArgument[0]) {
+                    case "e":
+                        message.reply(
+                            `[${boomRoll(oneArgument, arrDice)}] 
                     ${boomFinalRoll(arrDice, finalDice(sumNumber, arrDice))}`
-                );
-                break;
-            case "i":
-                message.reply(
-                    `[${infiniteBoomRoll(oneArgument, arrDice)}] 
+                        );
+                        break;
+                    case "i":
+                        message.reply(
+                            `[${infiniteBoomRoll(oneArgument, arrDice)}] 
                     ${boomFinalRoll(arrDice, finalDice(sumNumber, arrDice))}`
-	);
-                //Придумать как оформить и оптимизировать
-                break;
-            case "t":
-                message.reply(
-                    `[${infiniteBoomRoll(oneArgument, arrDice)}] 
+                        );
+                        //Придумать как оформить и оптимизировать
+                        break;
+                    case "t":
+                        message.reply(
+                            `[${infiniteBoomRoll(oneArgument, arrDice)}] 
                     ${successFinalRoll(oneArgument, arrDice)}`
-                );
-                //Починить
-                break;
-        }
-    } else {
-        if (diceFacet !== null) {
-            const arrDice = standartRoll(diceNumber, diceFacet);
-            const sumDice = finalRoll(sumNumber, arrDice);
-            message.reply(`[${arrDice}] ${sumDice}`);
-        } else if (diceFacet === null) {
-            const arrDice = standartRoll(diceNumber, 3);
-            const result = fateRoll(arrDice, sumNumber);
-            message.reply(result);
-        }
+                        );
+                        //Починить
+                        break;
+                }
+            } else {
+                if (diceFacet !== null) {
+                    const arrDice = standartRoll(diceNumber, diceFacet);
+                    const sumDice = finalRoll(sumNumber, arrDice);
+                    message.reply(`[${arrDice.join(", ")}] ${sumDice}`);
+                } else if (diceFacet === null) {
+                    const arrDice = standartRoll(diceNumber, 3);
+                    const result = fateRoll(arrDice, sumNumber);
+                    message.reply(result);
+                }
+            }
+            break;
+        default:
+            console.log("Некорректная команда");
     }
-    break;
-default:
-    console.log("Некорректная команда");
-}
 
 })
 ;
