@@ -183,28 +183,16 @@ client.on("message", function (message) {
             if (oneArgument[0] ?? false) {
                 let arrDice = standartRoll(diceNumber, diceFacet);
                 let finalDice = finalRoll(sumNumber, arrDice);
-                switch (oneArgument[0]) {
-                    case "e":
-                        message.reply(
-                            `[${boomRoll(oneArgument, arrDice)}] 
-                    ${boomFinalRoll(arrDice, finalDice)}`
-                        );
-                        break;
-                    case "i":
-                        message.reply(
-                            `[${infiniteBoomRoll(oneArgument, arrDice)}] 
-                    ${boomFinalRoll(arrDice, finalDice)}`
-                        );
-                        //Придумать как оформить и оптимизировать
-                        break;
-                    case "t":
-                        message.reply(
-                            `[${arrDice}] 
-                    ${successFinalRoll(oneArgument, arrDice)}`
-                        );
-                        //Починить
-                        break;
+                const diceObj = {
+                    'e' : `[${boomRoll(oneArgument, arrDice)}] 
+                    ${boomFinalRoll(arrDice, finalDice)}`,
+                    'i' : `[${infiniteBoomRoll(oneArgument, arrDice)}] 
+                    ${boomFinalRoll(arrDice, finalDice)}`,
+                    //Придумать как оформить и оптимизировать
+                    't' : `[${arrDice}] ${successFinalRoll(oneArgument, arrDice)}`,
                 }
+                let result = diceObj[oneArgument[0]] || 'К сожалению такой команды нет'
+                message.reply(result)
             } else {
                 if (diceFacet !== null) {
                     const arrDice = standartRoll(diceNumber, diceFacet);
