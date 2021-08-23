@@ -140,34 +140,21 @@ client.on("message", function (message) {
             let result = ``
             let faceAddition = 0
             for (let i = 0; i < arrDice.length; i++) {
-                switch (arrDice[i]) {
-                    case 1:
-                        arrDice[i] = "-"
-                        break;
-                    case 2:
-                        arrDice[i] = "="
-                        break;
-                    case 3:
-                        arrDice[i] = "+"
-                        break;
-                    default:
-                        console.log("Неверный тип данных");
+                let fateObj = {
+                    1 : "-",
+                    2 : "=",
+                    3 : "+",
                 }
+                arrDice[i] = fateObj[arrDice[i]] || console.log("Неверный тип данных");
             }
             result = `[${arrDice.map(String)}]`;
             for (let i = 0; i < arrDice.length; i++) {
-                switch (arrDice[i]) {
-                    case "-":
-                        faceAddition += -1
-                        break;
-                    case "=":
-                        break;
-                    case "+":
-                        faceAddition += 1
-                        break;
-                    default:
-                        console.log("Неверный тип данных");
+                let fateObj = {
+                    "-" : -1,
+                    "=" : 0,
+                    "+" : 1,
                 }
+                faceAddition += fateObj[arrDice[i]] ?? console.log("Неверный тип данных");
             }
             if (sumNumber !== null) {
                 result += `\nМодификатор: ${sumNumber};`;
