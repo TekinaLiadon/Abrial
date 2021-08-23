@@ -53,21 +53,22 @@ client.on("message", function (message) {
             break;
         case "roll":
             const dice = args[0];
-            const oneArgument = args[1].split('')
+            let oneArgument;
+            if (args[1] ?? false) {
+                oneArgument = args[1].split('')
+            }
+            else {
+                oneArgument = [false]
+            }
             const diceFacet = dice.match(/(?<=d)\d+/);
             const diceNumber = dice.match(/\d+(?=d)/);
             const sumNumber = dice.match(/(?<=\+)\d+/);
 
 
-            let oneRoll
-            (diceFacet) => {
-                Math.round(Math.random() * (diceFacet - 1) + 1);
-            }
-
         function standartRoll(diceNumber, diceFacet) {
             let result = [];
             for (let i = 0; i < diceNumber; i++) {
-                result.push(oneRoll(diceFacet));
+                result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
             }
             return result;
         }
@@ -78,7 +79,7 @@ client.on("message", function (message) {
             const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
             for (let i = 0; i < diceNumber; i++) {
                 if (result[i] >= transferBoundary) {
-                    result.push(oneRoll(diceFacet));
+                    result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
                 }
             }
             return result;
@@ -90,7 +91,7 @@ client.on("message", function (message) {
             const transferBoundary = boomFacet.map(i => x += i, x = 0).reverse()[0]
             for (let i = 0; i < result.length; i++) {
                 if (result[i] >= transferBoundary) {
-                    result.push(oneRoll(diceFacet));
+                    result.push(Math.round(Math.random() * (diceFacet - 1) + 1));
                 } else if (result.length > 100) {
                     break;
                 }
@@ -124,19 +125,14 @@ client.on("message", function (message) {
         function successFinalRoll(oneArgument, resultDice) {
             let result = ''
             const thresholdDice = oneArgument.splice(1).map(i => x += i, x = 0).reverse()[0];
-            console.log(thresholdDice)
             result += `\nЧисло успехов: `;
-            let successfulDice = [];
+            let successfulDice = 0;
             for (let i = 0; i < resultDice.length; i++) {
                 if (resultDice[i] >= thresholdDice) {
-                    successfulDice.push(1);
-                    console.log(successfulDice)
-                }
-                if (i === resultDice.length) {
-                    successfulDice.map(i => x += i, x = 0).reverse()[0];
-                    result += successfulDice;
+                    successfulDice += 1;
                 }
             }
+            result += successfulDice;
             return result;
         }
 
@@ -184,25 +180,26 @@ client.on("message", function (message) {
             }
         }
 
-            if (oneArgument[0] !== null || undefined) {
-                let arrDice = standartRoll(diceNumber, diceFacet)
+            if (oneArgument[0] ?? false) {
+                let arrDice = standartRoll(diceNumber, diceFacet);
+                let finalDice = finalRoll(sumNumber, arrDice);
                 switch (oneArgument[0]) {
                     case "e":
                         message.reply(
                             `[${boomRoll(oneArgument, arrDice)}] 
-                    ${boomFinalRoll(arrDice, finalDice(sumNumber, arrDice))}`
+                    ${boomFinalRoll(arrDice, finalDice)}`
                         );
                         break;
                     case "i":
                         message.reply(
                             `[${infiniteBoomRoll(oneArgument, arrDice)}] 
-                    ${boomFinalRoll(arrDice, finalDice(sumNumber, arrDice))}`
+                    ${boomFinalRoll(arrDice, finalDice)}`
                         );
                         //Придумать как оформить и оптимизировать
                         break;
                     case "t":
                         message.reply(
-                            `[${infiniteBoomRoll(oneArgument, arrDice)}] 
+                            `[${arrDice}] 
                     ${successFinalRoll(oneArgument, arrDice)}`
                         );
                         //Починить
