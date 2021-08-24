@@ -1,6 +1,11 @@
 # Abrial
 Перфикс - !
 Доступные команды:
+ping
+command
+sum
+avatar
+roll
 1. 4d6
 2. 4d6+2
 3. 4df
