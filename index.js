@@ -1,19 +1,27 @@
 const Discord = require("../node_modules/discord.js");
 const config = require("../token.json");
 const fs = require('fs');
+const path = require('path');
+const fetch = require('node-fetch');
 
 const client = new Discord.Client();
+client.commands = new Discord.Collection()
 const prefix = "!";
-const commandList = [
-    "command_full",
-    "command",
-    "ping",
-    "sum",
-    "avatar",
-    "roll",
-];
 
-//Тесты
+
+// const test = fs.readdir('./commands', (err, files) => { // чтение файлов в папке commands
+//     if (err) console.log(err)
+//
+//     let jsfile = files.filter(f => f.split('.').pop() === 'js') // файлы не имеющие расширение .js игнорируются
+//     if (jsfile.length <= 0) return console.log('Команды не найдены!') // если нет ни одного файла с расширением .js
+//
+//     console.log(`Загружено ${jsfile.length} команд`)
+//     jsfile.forEach((f, i) => { // добавляем каждый файл в коллекцию команд
+//         let props = require(`./commands/${f}`)
+//         client.commands.set(props.help.name, props)
+//     })
+// })
+// console.log(test);
 
 client.on('ready', () => {
     console.log('Я готов!');
@@ -56,14 +64,12 @@ client.on("message", function (message) {
             let oneArgument;
             if (args[1] ?? false) {
                 oneArgument = args[1].split('')
-            }
-            else {
+            } else {
                 oneArgument = [false]
             }
             const diceFacet = dice.match(/(?<=d)\d+/);
             const diceNumber = dice.match(/\d+(?=d)/);
             const sumNumber = dice.match(/(?<=\+)\d+/);
-
 
         function standartRoll(diceNumber, diceFacet) {
             let result = [];
@@ -98,7 +104,6 @@ client.on("message", function (message) {
             }
             return result;
         }
-
 
         function finalRoll(sumNumber, resultDice) {
             let sum = resultDice.reduce((partial_sum, a) => partial_sum + a, 0);
@@ -141,18 +146,18 @@ client.on("message", function (message) {
             let faceAddition = 0
             for (let i = 0; i < arrDice.length; i++) {
                 let fateObj = {
-                    1 : "-",
-                    2 : "=",
-                    3 : "+",
+                    1: "-",
+                    2: "=",
+                    3: "+",
                 }
                 arrDice[i] = fateObj[arrDice[i]] || console.log("Неверный тип данных");
             }
             result = `[${arrDice.map(String)}]`;
             for (let i = 0; i < arrDice.length; i++) {
                 let fateObj = {
-                    "-" : -1,
-                    "=" : 0,
-                    "+" : 1,
+                    "-": -1,
+                    "=": 0,
+                    "+": 1,
                 }
                 faceAddition += fateObj[arrDice[i]] ?? console.log("Неверный тип данных");
             }
@@ -171,12 +176,12 @@ client.on("message", function (message) {
                 let arrDice = standartRoll(diceNumber, diceFacet);
                 let finalDice = finalRoll(sumNumber, arrDice);
                 const diceObj = {
-                    'e' : `[${boomRoll(oneArgument, arrDice)}] 
+                    'e': `[${boomRoll(oneArgument, arrDice)}] 
                     ${boomFinalRoll(arrDice, finalDice)}`,
-                    'i' : `[${infiniteBoomRoll(oneArgument, arrDice)}] 
+                    'i': `[${infiniteBoomRoll(oneArgument, arrDice)}] 
                     ${boomFinalRoll(arrDice, finalDice)}`,
                     //Придумать как оформить и оптимизировать
-                    't' : `[${arrDice}] ${successFinalRoll(oneArgument, arrDice)}`,
+                    't': `[${arrDice}] ${successFinalRoll(oneArgument, arrDice)}`,
                 }
                 let result = diceObj[oneArgument[0]] || 'К сожалению такой команды нет'
                 message.reply(result)
@@ -198,4 +203,4 @@ client.on("message", function (message) {
 
 })
 ;
-client.login(config.BOT_TOKEN);
+client.login(config.token);
