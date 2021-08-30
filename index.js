@@ -144,21 +144,21 @@ client.on("message", function (message) {
         function fateRoll(arrDice, sumNumber) {
             let result = ``
             let faceAddition = 0
+            let fateObj = {
+                1: "-",
+                2: "=",
+                3: "+",
+            }
+            let fateObj = {
+                "-": -1,
+                "=": 0,
+                "+": 1,
+            }
             for (let i = 0; i < arrDice.length; i++) {
-                let fateObj = {
-                    1: "-",
-                    2: "=",
-                    3: "+",
-                }
                 arrDice[i] = fateObj[arrDice[i]] || console.log("Неверный тип данных");
             }
             result = `[${arrDice.map(String)}]`;
             for (let i = 0; i < arrDice.length; i++) {
-                let fateObj = {
-                    "-": -1,
-                    "=": 0,
-                    "+": 1,
-                }
                 faceAddition += fateObj[arrDice[i]] ?? console.log("Неверный тип данных");
             }
             if (sumNumber !== null) {
