@@ -1,14 +1,30 @@
 {
-  "name": "discord-bot",
+  "name": "Abrial",
   "version": "1.0.0",
-  "description": "discord bot",
-  "main": "index.js",
+  "description": "",
   "scripts": {
-    "start" : "node index.js"
+    "update_command": "bun 01-app/index.ts deploy",
+    "register_command": "bun 01-app/index.ts register",
+    "dev": "bun run --watch 01-app/index.ts",
+    "start": "NODE_ENV=production bun 01-app/index.ts",
+    "test": "bun test",
+    "migrate": "node-pg-migrate"
   },
-  "author": "Tekina / nm0321@yandex.ru",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.5.3"
+    "@napi-rs/canvas": "^0.1.51",
+    "bunyan": "^1.8.15",
+    "bunyan-format": "^0.2.1",
+    "discord-api-types": "^0.37.54",
+    "discord.js": "^14.13.0",
+    "node-pg-migrate": "^7.5.2",
+    "pg": "^8.12.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.1",
+    "undici": "^6.7.1"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
   }
 }
