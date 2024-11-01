@@ -21,7 +21,7 @@ export const primaryEmbed = (
     .setFooter({
       text: "Ваша Абриэль",
       iconURL: "https://i.imgur.com/AfFp7pu.png",
-    });
+    })
 
 export const errorEmbed = (
   title = "",
