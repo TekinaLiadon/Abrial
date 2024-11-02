@@ -42,12 +42,12 @@ export default class ReadyEvent extends Event {
   }
 
   async exec(member: GuildMember) {
-    const welcome: TextChannel = member.guild.channels.cache.get(
-        Bun.env.WELCOME_ID
-    ) as TextChannel; // id chanel
     const pool = new Pool()
+    const channel_id = await pool.query('SELECT channel_id FROM channel WHERE guild_id = $1 AND type=$2', [member.guild.id, "welcome"])
     const checkRegister = await pool.query('SELECT * FROM bot_core WHERE discord_id = $1', [member.user.id])
-    if(checkRegister.rows.length > 0) {
+    const welcome: TextChannel = member.guild.channels.cache.get(channel_id.rows[0]?.channel_id) as TextChannel;
+    if(!checkRegister.rows.length) {
+      await pool.query('INSERT INTO bot_character (discord_id, name) VALUES ($1, $2, $3)', [member.user.id, member.user.globalName,])
       let role = member.guild.roles.cache.get(Bun.env.CORE_ROLE);
       let user = member.guild.members.cache.get(member.user.id);
       user.roles.add(role);

@@ -14,9 +14,5 @@ export default class GuildBanAddEvent extends Event {
                 primaryEmbed(`Прощай`, `Пользователь <@${banLog?.targetId}> забанен пользователем ${banLog?.executor} по причине: "${banLog?.reason || 'Не указана'}"`)
             ]
         })
-
-
     }
-
-
 }
