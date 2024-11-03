@@ -1,8 +1,8 @@
 import SlashCommand from "../structures/Command";
 import {Client, ChatInputCommandInteraction, SlashCommandBuilder,} from "discord.js";
-import {errorEmbed, primaryEmbed} from "../utils/embeds";
-import pg from 'pg'
-const { Pool } = pg
+import { primaryEmbed} from "../utils/embeds";
+import db from "../structures/Db";
+import { discordLogger } from "../utils/logger";
 
 export default class ExampleCommand extends SlashCommand {
     constructor() {
@@ -12,18 +12,16 @@ export default class ExampleCommand extends SlashCommand {
             ]
         })
     }
-
     async exec(interaction: ChatInputCommandInteraction) {
-        const pool = new Pool()
         const points = interaction.options.getNumber("points")
         const id = interaction.options.getString('id')
-        const pointsSql = await pool.query('UPDATE bot_character SET points = points + $1 WHERE discord_id = $2', [points, id])
-
+        await db.pool('UPDATE bot_character SET points = points + $1 WHERE discord_id = $2', [points, id])
+        discordLogger.info(`${interaction.user.globalName} / ${interaction.user.id} поменял пользователю ${id} число очков на ${points}`)
 
         await interaction.reply({
             embeds: [
                 primaryEmbed('Готово', `Число очков пользователя изменено на ${points}`, "Gold")
-            ]
+            ], ephemeral: true
         });
     }
 

@@ -1,8 +1,6 @@
 import SlashCommand from "../structures/Command";
 import { Client, CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { primaryEmbed, errorEmbed } from "../utils/embeds";
-import pg from 'pg'
-const { Pool } = pg
 
 export default class DiceCommand extends SlashCommand {
   constructor() {
@@ -10,19 +8,6 @@ export default class DiceCommand extends SlashCommand {
   }
 
   async exec(interaction: CommandInteraction) {
-    const pool = new Pool()
-    const checkRegister = await pool.query('SELECT * FROM bot_core WHERE discord_id = $1', [interaction.user.id])
-    if(!checkRegister.rows.length) {
-      interaction.reply({
-        embeds: [
-          errorEmbed(
-              "Ошибка",
-              "Вы не зарегестрированы"
-          ),
-        ],
-      });
-      return
-    }
     const dices = interaction.options.getNumber("dices");
     const facets = interaction.options.getNumber("facets");
     const mod = interaction.options.getNumber("mod");

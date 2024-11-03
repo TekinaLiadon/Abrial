@@ -8,9 +8,8 @@ import {
     SlashCommandBuilder,
 } from "discord.js";
 import { primaryEmbed } from "../utils/embeds";
-import pg from 'pg'
 import {formatDate} from "../utils/helpers";
-const { Pool } = pg
+import db from "../structures/Db";
 
 export default class DiceCommand extends SlashCommand {
     constructor() {
@@ -18,9 +17,7 @@ export default class DiceCommand extends SlashCommand {
     }
 
     async exec(interaction: CommandInteraction) {
-        const pool = new Pool()
-        const pointsSql = await pool.query('SELECT * FROM bot_character WHERE discord_id = $1', [interaction.user.id])
-        const { points, createdAt } = pointsSql.rows[0];
+        const { points, createdAt } = await db.pool('SELECT * FROM bot_character WHERE discord_id = $1', [interaction.user.id])
 
         const user = interaction.user;
         const guild = interaction.guild;
@@ -46,7 +43,8 @@ export default class DiceCommand extends SlashCommand {
                         {name: 'Первое появление', value: `${formatDate(createdAt)}`})
                     .setThumbnail(avatarURL),
             ],
-            components: [row]
+            components: [row],
+            ephemeral: true
         });
         const collectorFilter = i => i.user.id === interaction.user.id;
 
@@ -59,7 +57,7 @@ export default class DiceCommand extends SlashCommand {
                 const {update_points} = getTime.rows[0];
                 const timeDifference = Math.abs(now - new Date(update_points))
                 const hoursDifference = timeDifference / (1000 * 60 * 60)
-                if(hoursDifference <= 23) {
+                if(hoursDifference < 23) {
                     await confirmation.update({ content: 'Вы уже отмечались за последние 24 часа', embeds: [
                             primaryEmbed(
                                 "Ваши данные",
@@ -69,10 +67,10 @@ export default class DiceCommand extends SlashCommand {
                                     { name: 'Список ролей', value: roleList.join(', '), inline: false },
                                     {name: 'Первое появление', value: `${formatDate(createdAt)}`})
                                 .setThumbnail(avatarURL),
-                        ]  });
+                        ], ephemeral: true  });
                     return
                 }
-                const pointsSql = await pool.query('UPDATE bot_character SET points = points + 50, update_points = $1 WHERE discord_id = $2', [isoString, interaction.user.id])
+                await db.pool('UPDATE bot_character SET points = points + 50, update_points = $1 WHERE discord_id = $2', [isoString, interaction.user.id])
                 await confirmation.update({ content: 'Вы успешно отметились', embeds: [
                         primaryEmbed(
                             "Ваши данные",
@@ -82,11 +80,10 @@ export default class DiceCommand extends SlashCommand {
                                 { name: 'Список ролей', value: roleList.join(', '), inline: false },
                                 {name: 'Первое появление', value: `${formatDate(createdAt)}`})
                             .setThumbnail(avatarURL),
-                    ], components: []  })
+                    ], components: [], ephemeral: true  })
             }
         } catch (e) {
-            console.log(e)
-            await interaction.editReply({ content: 'Подтверждение не получено в течении 1 минуты. Отмена', components: [] });
+            await interaction.editReply({ content: 'Подтверждение не получено в течении 1 минуты. Отмена', components: [], ephemeral: true });
         }
     }
 

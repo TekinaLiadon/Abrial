@@ -25,6 +25,7 @@ import { discordLogger } from "../utils/logger";
 discordLogger.info("Началась загрузка событий...");
 import Event from "../structures/Event";
 import Command from "../structures/Command";
+import Db from "../structures/Db";
 export const commands = new Discord.Collection<string, Command>();
 const start = async () => {
   const eventsLoading = await (async function loadEvents(

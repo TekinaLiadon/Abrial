@@ -23,6 +23,7 @@ import { Canvas, createCanvas, loadImage, Image } from "@napi-rs/canvas";
 import { URL } from "node:url";
 import { request } from "undici";
 import pg from 'pg'
+import db from "../structures/Db";
 const { Pool } = pg
 
 // Также чтобы срабатывал это событие необходимо на портале разработчиков в настройках бота включить опцию Server Members Intent.
@@ -42,19 +43,17 @@ export default class ReadyEvent extends Event {
   }
 
   async exec(member: GuildMember) {
-    const pool = new Pool()
-    const channel_id = await pool.query('SELECT channel_id FROM channel WHERE guild_id = $1 AND type=$2', [member.guild.id, "welcome"])
-    const checkRegister = await pool.query('SELECT * FROM bot_core WHERE discord_id = $1', [member.user.id])
-    const welcome: TextChannel = member.guild.channels.cache.get(channel_id.rows[0]?.channel_id) as TextChannel;
-    if(!checkRegister.rows.length) {
-      await pool.query('INSERT INTO bot_character (discord_id, name) VALUES ($1, $2, $3)', [member.user.id, member.user.globalName,])
+    const channel_id = await db.pool('SELECT channel_id FROM channel WHERE guild_id = $1 AND type=$2', [member.guild.id, "welcome"])
+    const checkRegister = await db.pool('SELECT * FROM bot_core WHERE discord_id = $1', [member.user.id])
+    const welcome: TextChannel = member.guild.channels.cache.get(channel_id?.channel_id) as TextChannel;
+    if(!checkRegister.length) {
+      await db.pool('INSERT INTO bot_character (discord_id, name) VALUES ($1, $2, $3)', [member.user.id, member.user.globalName,])
       let role = member.guild.roles.cache.get(Bun.env.CORE_ROLE);
       let user = member.guild.members.cache.get(member.user.id);
       user.roles.add(role);
     }
     const canvas = createCanvas(700, 250);
     const context = canvas.getContext("2d");
-
     const background = await loadImage(
       new URL("../assets/wallpaper.jpg", import.meta.url)
     );

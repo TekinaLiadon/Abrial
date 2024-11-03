@@ -20,4 +20,8 @@ export default class Event {
     unregister(client: Client) {
         client.removeListener(this.event, this.exec);
     }
+
+    async pool(str: string, arg: Array<any>){
+        return this.db(str, arg)
+    }
 }

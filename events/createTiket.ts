@@ -16,6 +16,9 @@ export default class MessageReactionAddEvent extends Event {
     const id = reaction.message.channelId;
     const emoji = reaction.emoji.name;
     const memberId = member.id;
+
+    const reactions = reaction.message.reactions.cache.get(emoji).count;
+    /*console.log(reactions, reaction.count)*/
     if (reaction.emoji.name === "⭐") {
       var count = 0
       reaction.users.reaction.client.users.cache.forEach((el) => {
