@@ -13,6 +13,8 @@ export default class MessageReactionAddEvent extends Event {
   }
 
   async exec(reaction: MessageReaction, member: GuildMember) {
+    return
+    // TODO Переделать
     const id = reaction.message.channelId;
     const emoji = reaction.emoji.name;
     const memberId = member.id;

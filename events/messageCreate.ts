@@ -11,6 +11,7 @@ export default class MessageCreateEvent extends Event {
     constructor() { super('messageCreate', 'messageCreate'); };
 
     async exec(member: GuildMember) {
+        if(!member?.guild?.id) return
         if(cashList.length === 0) {
             const channel_id = await db.pool('SELECT channel_id FROM channel WHERE guild_id = $1 AND type=$2', [member.guild.id, "creativity"])
             const channel_log = await db.pool('SELECT channel_id FROM channel WHERE guild_id = $1 AND type=$2', [member.guild.id, "welcome"])
@@ -21,14 +22,12 @@ export default class MessageCreateEvent extends Event {
         if(member.attachments.size > 0) {
             const attachment = member.attachments.first()
             if (attachment.contentType.startsWith('image/')) {
-                const pool = new Pool()
-                const counter = await pool.query('SELECT img_count, update_img FROM bot_character WHERE discord_id = $1', [member.author.id])
-                const {img_count, update_img} = counter.rows[0]
+                const counter = await db.pool('SELECT img_count, update_img FROM bot_character WHERE discord_id = $1', [member.author.id])
+                const {img_count, update_img} = counter
                 const now = new Date();
                 const timeDifference = Math.abs(now - new Date(update_img))
                 const hoursDifference = timeDifference / (1000 * 60 * 60)
                 const log: TextChannel = member.guild.channels.cache.get(logId) as TextChannel;
-                console.log(img_count, hoursDifference)
                 if(img_count >= 1 && hoursDifference < 23) {
                     log.send({
                         embeds: [
@@ -38,7 +37,7 @@ export default class MessageCreateEvent extends Event {
                 } else {
                     const now = new Date();
                     const isoString = now.toISOString()
-                    await pool.query('UPDATE bot_character SET points = points + $1, update_img= $3, img_count = img_count + $4 WHERE discord_id = $2', [100, member.author.id, isoString, 1])
+                    await db.pool('UPDATE bot_character SET points = points + $1, update_img= $3, img_count = img_count + $4 WHERE discord_id = $2', [100, member.author.id, isoString, 1])
                     log.send({
                         embeds: [
                             primaryEmbed('Молодец', `Продолжай в том же духе ${member.author.globalName}. Вот твои 100 очков`)

@@ -6,11 +6,11 @@ class Db {
     constructor() {
         this.db = new Pool()
     }
-    async pool(str: string, arg: Array<any>): Promise<any | undefined> {
+    async pool(str: string, arg: Array<any>, isFull: Boolean = false): Promise<any | undefined> {
         const client = await this.db.connect();
         try {
             const result = await client.query(str, arg);
-            return result.rows[0];
+            return isFull ? result.rows : result.rows[0];
         } catch (e){
             discordLogger.error(e)
         } finally {

@@ -13,6 +13,14 @@ export default class AddChannel extends SlashCommand {
     }
 
     async exec(interaction: ChatInputCommandInteraction) {
+        if(!interaction?.guild?.id) {
+            interaction.reply({ embeds: [
+                    primaryEmbed(
+                        "Ошибка",
+                        'Команду можно применять только на сервере')
+                ], ephemeral: true });
+            return
+        }
         const channelId = interaction.channelId
         const guildId = interaction.guildId
         const type = interaction.options.getString('type')

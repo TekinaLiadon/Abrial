@@ -15,7 +15,7 @@ export default class ExampleCommand extends SlashCommand {
     async exec(interaction: ChatInputCommandInteraction) {
         const points = interaction.options.getNumber("points")
         const id = interaction.options.getString('id')
-        await db.pool('UPDATE bot_character SET points = points + $1 WHERE discord_id = $2', [points, id])
+        await db.pool('UPDATE bot_character SET points = points + $1 WHERE discord_id = $2 AND guild_id = $3', [points, id, interaction.guild.id])
         discordLogger.info(`${interaction.user.globalName} / ${interaction.user.id} поменял пользователю ${id} число очков на ${points}`)
 
         await interaction.reply({
