@@ -7,6 +7,12 @@
     "register_command": "bun 01-app/index.ts register",
     "dev": "bun run --watch 01-app/index.ts",
     "start": "NODE_ENV=production bun 01-app/index.ts",
+    "pm2_start": "pm2 start 01-app/index.ts --name=Abrial --max-memory-restart 1999M --watch --ignore-watch='node_modules logs'",
+    "pm2_info": "pm2 ls",
+    "pm2_restart": "pm2 restart 01-app/index.ts --name=Abrial",
+    "pm2_stop": "pm2 stop Abrial --watch",
+    "pm2_delete": "pm2 delete Abrial",
+    "pm2_monit": "pm2 monit",
     "test": "bun test",
     "migrate": "node-pg-migrate"
   },
@@ -20,6 +26,7 @@
     "discord.js": "^14.13.0",
     "node-pg-migrate": "^7.5.2",
     "pg": "^8.12.0",
+    "pm2": "^5.4.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "undici": "^6.7.1"
