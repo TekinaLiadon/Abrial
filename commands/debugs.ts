@@ -14,9 +14,10 @@ export default class ExampleCommand extends SlashCommand {
     }
 
     async exec(interaction: ChatInputCommandInteraction) {
-        const test = await db.pool('SELECT * FROM bot_character', [], true)
-        const result = test.map((el) => JSON.stringify(el)).join(' | ')
-        discordLogger.error(result)
+        //const test = await db.pool('SELECT * FROM bot_character', [], true)
+        //const result = test.map((el) => JSON.stringify(el)).join(' | ')
+        //discordLogger.error(result)
+        await db.pool('DELETE FROM bot_character WHERE discord_id = $1', ['997565297827528766'])
 
         await interaction.reply({
             embeds: [
