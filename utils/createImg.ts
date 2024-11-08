@@ -6,10 +6,10 @@ import {AttachmentBuilder, GuildMember} from "discord.js";
 const applyText = (canvas: any, text: string) => {
     const context = canvas.getContext("2d");
     let fontSize = 70;
-
     do {
-        context.font = `${(fontSize -= 10)}px ubuntu`;
+        context.font = `${(fontSize -= 10)}px`;
     } while (context.measureText(text).width > canvas.width - 300);
+    console.log(context.font)
     return context.font;
 };
 
@@ -29,6 +29,7 @@ export default async (member: GuildMember) => {
         canvas.width / 2.5,
         canvas.height / 3.5
     );
+    console.log(context.font)
 
     context.font = applyText(canvas, `Добро пожаловать на сервер`);
     context.fillStyle = "#ffffff";
