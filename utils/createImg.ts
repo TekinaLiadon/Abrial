@@ -1,7 +1,7 @@
-import {createCanvas, Image, loadImage} from "@napi-rs/canvas";
+import {Canvas, createCanvas, loadImage, Image} from "@napi-rs/canvas";
 import {URL} from "node:url";
 import {request} from "undici";
-import {AttachmentBuilder} from "discord.js";
+import {AttachmentBuilder, GuildMember} from "discord.js";
 
 const applyText = (canvas: any, text: string) => {
     const context = canvas.getContext("2d");
@@ -13,7 +13,7 @@ const applyText = (canvas: any, text: string) => {
     return context.font;
 };
 
-export default async (member) => {
+export default async (member: GuildMember) => {
     const canvas = createCanvas(700, 250);
     const context = canvas.getContext("2d");
     const background = await loadImage(

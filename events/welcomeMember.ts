@@ -1,8 +1,5 @@
-import { GuildMember, TextChannel, AttachmentBuilder } from "discord.js";
+import { GuildMember, TextChannel} from "discord.js";
 import Event from "../structures/Event";
-import { Canvas, createCanvas, loadImage, Image } from "@napi-rs/canvas";
-import { URL } from "node:url";
-import { request } from "undici";
 import db from "../structures/Db";
 import createImg from "../utils/createImg";
 
