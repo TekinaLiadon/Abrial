@@ -8,7 +8,7 @@ const applyText = (canvas: any, text: string) => {
     let fontSize = 70;
 
     do {
-        context.font = `${(fontSize -= 10)}px sans-serif`;
+        context.font = `${(fontSize -= 10)}px ubuntu`;
     } while (context.measureText(text).width > canvas.width - 300);
     return context.font;
 };
@@ -22,7 +22,7 @@ export default async (member: GuildMember) => {
 
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-    context.font = "28px sans-serif";
+    context.font = "28px ubuntu";
     context.fillStyle = "#ffffff";
     context.fillText(
         `${member?.displayName}`,
