@@ -2,14 +2,14 @@ import {Canvas, createCanvas, loadImage, Image} from "@napi-rs/canvas";
 import {URL} from "node:url";
 import {request} from "undici";
 import {AttachmentBuilder, GuildMember} from "discord.js";
+// /usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf
 
 const applyText = (canvas: any, text: string) => {
     const context = canvas.getContext("2d");
     let fontSize = 70;
     do {
-        context.font = `${(fontSize -= 10)}px`;
+        context.font = `${(fontSize -= 10)}px DejaVuSansMono`;
     } while (context.measureText(text).width > canvas.width - 300);
-    console.log(context.font)
     return context.font;
 };
 
@@ -19,17 +19,15 @@ export default async (member: GuildMember) => {
     const background = await loadImage(
         new URL("../assets/wallpaper.jpg", import.meta.url)
     );
-
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-    context.font = "28px ubuntu";
+    context.font = "28px DejaVuSansMono";
     context.fillStyle = "#ffffff";
     context.fillText(
         `${member?.displayName}`,
         canvas.width / 2.5,
         canvas.height / 3.5
     );
-    console.log(context.font)
 
     context.font = applyText(canvas, `Добро пожаловать на сервер`);
     context.fillStyle = "#ffffff";
