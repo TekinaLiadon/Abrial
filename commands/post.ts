@@ -24,7 +24,7 @@ export default class ExampleCommand extends SlashCommand {
         await interaction.reply({
             embeds: [
                 primaryEmbed('Готово', `Пост опубликован`, "Gold")
-            ]
+            ], ephemeral: true
         });
     }
 
