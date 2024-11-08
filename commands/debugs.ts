@@ -15,7 +15,7 @@ export default class ExampleCommand extends SlashCommand {
 
     async exec(interaction: ChatInputCommandInteraction) {
         const test = await db.pool('SELECT * FROM bot_character', [], true)
-        const result = test.map((el) => String(el)).join(' | ')
+        const result = test.map((el) => JSON.stringify(el)).join(' | ')
         discordLogger.error(result)
 
         await interaction.reply({
