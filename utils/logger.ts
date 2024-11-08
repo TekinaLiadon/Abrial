@@ -21,10 +21,10 @@ export default function createLogger(name: string): bunyan {
     const logger = bunyan.createLogger({ 
         name: name,
         streams: process.env['NO_LOG_DIR'] 
-            ? [{ level: process.env.NODE_ENV === "production" ? 'info' : 'debug', stream: bFormat }]
+            ? [{ level: process.env.NODE_ENV === "production" ? 'error' : 'debug', stream: bFormat }]
             : [
-                { level: process.env.NODE_ENV === "production" ? 'info' : 'debug', stream: bFormat },
-                { level: 'info', path: './logs/' + name + '.log' },
+                { level: process.env.NODE_ENV === "production" ? 'error' : 'debug', stream: bFormat },
+                /*{ level: 'info', path: './logs/' + name + '.log' },*/
                 { level: 'error', path: './logs/' + name + '.log' }
             ]
     });

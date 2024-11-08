@@ -30,10 +30,14 @@ export default class ReadyEvent extends Event {
 
 var registration = async (res) => {
   await db.pool('INSERT INTO bot_character (discord_id, guild_id, name, password) VALUES ($1, $2, $3, $4)', [res.user.id, res.guild.id, res.user.globalName, 54321])
-  if(!roleId) res.guild.roles.cache.forEach(role => {
-    if(role.name === 'Новичок') roleId = role.id
-  });
-  let role = res.guild.roles.cache.get(roleId);
-  let user = res.guild.members.cache.get(res.user.id);
-  user.roles.add(role);
+  if(!roleId) {
+    res.guild.roles.cache.forEach(role => {
+      if(role.name === 'Новичок') roleId = role.id
+    });
+  }
+  if(roleId) {
+    let role = res.guild.roles.cache.get(roleId);
+    let user = res.guild.members.cache.get(res.user.id);
+    user.roles.add(role);
+  }
 }
